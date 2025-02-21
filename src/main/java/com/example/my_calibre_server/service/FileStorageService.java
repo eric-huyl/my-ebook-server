@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+
+
 
 @Service
 public class FileStorageService {
@@ -21,6 +24,19 @@ public class FileStorageService {
         Path targetLocation = Paths.get(storageLocation).resolve(file.getOriginalFilename());
         Files.copy(file.getInputStream(), targetLocation);
         return file.getOriginalFilename();
+    }
+
+
+    public List<File> listFiles() {
+
+        File file1 = new File();
+        file1.name = "file1";
+        File file2 = new File();
+        file2.name = "file2";
+        File file3 = new File(); 
+        file3.name = "file3";
+        
+        return List.of(file1, file2, file3);
     }
 
     // 加载文件

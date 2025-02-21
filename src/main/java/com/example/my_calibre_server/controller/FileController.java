@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.util.List;
+import java.util.Arrays;
+
+import com.example.my_calibre_server.service.File;
+
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
@@ -20,13 +25,16 @@ public class FileController {
 
     // 上传文件
     @PostMapping("/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            String fileName = fileStorageService.storeFile(file);
-            return "File uploaded successfully: " + fileName;
-        } catch (IOException e) {
-            return "Failed to upload file: " + e.getMessage();
-        }
+    public String uploadFile(@RequestParam("file") String file) {
+            // String fileName = fileStorageService.storeFile(file);
+            System.out.println("file.getOriginalFilename() = " + file);
+            return "File uploaded successfully: ";
+    }
+
+    @GetMapping("/list")
+    public List<File> listFiles() {
+        System.out.println("fileStorageService.listFiles() = " + fileStorageService.listFiles());
+        return fileStorageService.listFiles();
     }
 
     // 下载文件
