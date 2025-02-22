@@ -1,5 +1,6 @@
 package com.example.my_calibre_server.controller;
 
+import com.example.my_calibre_server.File;
 import com.example.my_calibre_server.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,8 +14,6 @@ import java.nio.file.Paths;
 
 import java.util.List;
 import java.util.Arrays;
-
-import com.example.my_calibre_server.service.File;
 
 @RestController
 @RequestMapping("/api/files")
@@ -45,4 +44,16 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(fileContent);
     }
+
+    @GetMapping("/init")
+    public String initFiles() {
+        return fileStorageService.initFiles();
+    }
+//
+//    @PostMapping("/new")
+//    public ResponseEntity<File> createFile(@RequestBody File file) {
+//        File savedFile = fileStorageService.saveFile(file);
+//        return ResponseEntity.ok(savedFile);
+//    }
+
 }

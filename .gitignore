@@ -39,3 +39,5 @@ out/
 
 
 tmp/
+sqlite/
+data/*
