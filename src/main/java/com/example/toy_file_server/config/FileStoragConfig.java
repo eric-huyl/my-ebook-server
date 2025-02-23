@@ -1,4 +1,4 @@
-package com.example.my_calibre_server.config;
+package com.example.toy_file_server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

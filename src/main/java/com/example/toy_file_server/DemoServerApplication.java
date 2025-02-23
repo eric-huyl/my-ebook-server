@@ -1,4 +1,4 @@
-package com.example.my_calibre_server;
+package com.example.toy_file_server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

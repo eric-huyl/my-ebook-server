@@ -1,12 +1,13 @@
-package com.example.my_calibre_server.controller;
+package com.example.toy_file_server.controller;
 
-import com.example.my_calibre_server.File;
-import com.example.my_calibre_server.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.example.toy_file_server.File;
+import com.example.toy_file_server.service.FileStorageService;
 
 import java.io.IOException;
 import java.nio.file.Path;

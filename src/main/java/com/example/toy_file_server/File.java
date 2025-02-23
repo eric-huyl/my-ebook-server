@@ -1,8 +1,18 @@
-package com.example.my_calibre_server;
+package com.example.toy_file_server;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+
+@Entity
 public class File {
     private String name;
     private String path;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     public File(String name) {
