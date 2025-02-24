@@ -1,4 +1,4 @@
-package com.example.toy_file_server;
+package com.example.toy_file_server.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +14,8 @@ public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    public File() {}
 
     public File(String name) {
         this.name = name;

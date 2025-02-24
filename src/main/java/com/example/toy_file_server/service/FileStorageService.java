@@ -1,8 +1,8 @@
 package com.example.toy_file_server.service;
 
 
+import com.example.toy_file_server.model.File;
 import com.example.toy_file_server.repository.FileRepository;
-import com.example.toy_file_server.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,10 @@ public class FileStorageService {
 
     public String initFiles() {
         String out = new String();
-        fileRepository.save(new File("f1"));
-        fileRepository.save(new File("f2"));
+        File testf = new File("f3");
+        testf.setPath("1.txt");
+        fileRepository.save(testf);
+        // fileRepository.save(new File("f2"));
         fileRepository.findAll().forEach(file -> {
             log.info(file.toString());
             out.concat(file.toString());
@@ -49,19 +52,21 @@ public class FileStorageService {
     public File saveFile(File file) {
         return fileRepository.save(file);
     }
+
+    public List<File> getAllFiles() {
+        ArrayList<File> out = new ArrayList<File>();
+        fileRepository.findAll().forEach(file->{out.add(file);});
+        return out;
+    }
     
 
-    public List<File> listFiles() {
-
-        File file1 = new File("3");
-        File file2 = new File("4");
-        
-        return List.of(file1, file2);
-    }
-
     // 加载文件
-    public byte[] loadFile(String fileName) throws IOException {
-        Path filePath = Paths.get(storageLocation).resolve(fileName);
+    public byte[] loadFileByName(String name) throws IOException {
+        File file = fileRepository.findByName(name);
+        if (file == null) {
+            throw new IOException("File not found with name: " + name);
+        }
+        Path filePath = Paths.get(storageLocation).resolve(file.getPath());
         return Files.readAllBytes(filePath);
     }
 }

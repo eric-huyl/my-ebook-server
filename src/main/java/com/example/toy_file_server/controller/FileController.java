@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.toy_file_server.File;
+import com.example.toy_file_server.model.File;
 import com.example.toy_file_server.service.FileStorageService;
 
 import java.io.IOException;
@@ -32,15 +32,15 @@ public class FileController {
     }
 
     @GetMapping("/list")
-    public List<File> listFiles() {
-        System.out.println("fileStorageService.listFiles() = " + fileStorageService.listFiles());
-        return fileStorageService.listFiles();
+    public List<File> getAllFiles() {
+        return fileStorageService.getAllFiles();
     }
+
 
     // 下载文件
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName) throws IOException {
-        byte[] fileContent = fileStorageService.loadFile(fileName);
+        byte[] fileContent = fileStorageService.loadFileByName(fileName);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(fileContent);
