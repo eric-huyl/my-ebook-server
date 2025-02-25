@@ -1,16 +1,19 @@
 package com.example.toy_file_server.service;
 
-
-import com.example.toy_file_server.model.File;
+import com.example.toy_file_server.model.FileEntity;
 import com.example.toy_file_server.repository.FileRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -29,12 +32,11 @@ public class FileStorageService {
     @Autowired
     private FileRepository fileRepository;
 
-
     private static final Logger log = LoggerFactory.getLogger(FileStorageService.class);
 
     public String initFiles() {
         String out = new String();
-        File testf = new File("f3");
+        FileEntity testf = new FileEntity("f3.txt");
         testf.setPath("1.txt");
         fileRepository.save(testf);
         // fileRepository.save(new File("f2"));
@@ -45,28 +47,47 @@ public class FileStorageService {
         return out;
     }   
 
-    public File getFileByName(String name) {
+    public FileEntity getFileByName(String name) {
         return fileRepository.findByName(name);
     }
 
-    public File saveFile(File file) {
-        return fileRepository.save(file);
-    }
-
-    public List<File> getAllFiles() {
-        ArrayList<File> out = new ArrayList<File>();
+    public List<FileEntity> getAllFiles() {
+        ArrayList<FileEntity> out = new ArrayList<FileEntity>();
         fileRepository.findAll().forEach(file->{out.add(file);});
         return out;
     }
     
 
     // 加载文件
-    public byte[] loadFileByName(String name) throws IOException {
-        File file = fileRepository.findByName(name);
+    public ResponseEntity<Resource> loadFileByName(String name) throws IOException {
+        FileEntity file = fileRepository.findByName(name);
         if (file == null) {
             throw new IOException("File not found with name: " + name);
         }
         Path filePath = Paths.get(storageLocation).resolve(file.getPath());
-        return Files.readAllBytes(filePath);
+        Resource resource = new UrlResource(filePath.toUri());
+        if(!resource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String contentDisposition = "attachment; filename=\"" + filePath.getFileName().toString() + "\"";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
+    public void saveFilefromFS(File file) {
+        String filePath = file.getAbsolutePath();
+        String fileName = file.getName();
+        fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setPath(filePath);
+        fileEntity.setName(fileName);
+        try {
+            fileRepository.save(fileEntity);
+        } catch (Exception e) {
+            log.error("Error saving file to database: " + fileName, e);
+        }
     }
 }
