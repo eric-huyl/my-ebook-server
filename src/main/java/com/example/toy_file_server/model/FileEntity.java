@@ -1,5 +1,7 @@
 package com.example.toy_file_server.model;
 
+import java.io.File;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -36,5 +38,15 @@ public class FileEntity {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public static FileEntity convertToEntity(File file) {
+        String filePath = file.getAbsolutePath();
+        String fileName = file.getName();
+        //fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setPath(filePath);
+        fileEntity.setName(fileName);
+        return fileEntity;
     }
 }

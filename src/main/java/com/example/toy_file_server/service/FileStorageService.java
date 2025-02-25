@@ -45,18 +45,19 @@ public class FileStorageService {
             out.concat(file.toString());
         });
         return out;
-    }   
+    }
 
     public FileEntity getFileByName(String name) {
         return fileRepository.findByName(name);
     }
 
     public List<FileEntity> getAllFiles() {
-        ArrayList<FileEntity> out = new ArrayList<FileEntity>();
-        fileRepository.findAll().forEach(file->{out.add(file);});
+        List<FileEntity> out = new ArrayList<FileEntity>();
+        fileRepository.findAll().forEach(file -> {
+            out.add(file);
+        });
         return out;
     }
-    
 
     // 加载文件
     public ResponseEntity<Resource> loadFileByName(String name) throws IOException {
@@ -66,7 +67,7 @@ public class FileStorageService {
         }
         Path filePath = Paths.get(storageLocation).resolve(file.getPath());
         Resource resource = new UrlResource(filePath.toUri());
-        if(!resource.exists()) {
+        if (!resource.exists()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -77,17 +78,15 @@ public class FileStorageService {
                 .body(resource);
     }
 
-    public void saveFilefromFS(File file) {
-        String filePath = file.getAbsolutePath();
-        String fileName = file.getName();
-        fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setPath(filePath);
-        fileEntity.setName(fileName);
-        try {
-            fileRepository.save(fileEntity);
-        } catch (Exception e) {
-            log.error("Error saving file to database: " + fileName, e);
-        }
+    public void saveFile(FileEntity file) {
+        fileRepository.save(file);
+    }
+
+    public void removeFile(FileEntity file) {
+        fileRepository.delete(file);
+    }
+
+    public void removeAll() {
+        fileRepository.deleteAll();
     }
 }

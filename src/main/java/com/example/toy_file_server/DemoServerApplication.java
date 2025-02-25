@@ -1,8 +1,10 @@
 package com.example.toy_file_server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class DemoServerApplication {
     public static void main(String[] args) {
       SpringApplication.run(DemoServerApplication.class, args);

@@ -8,23 +8,23 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.Arrays;
 import com.example.toy_file_server.model.FileEntity;
-import com.example.toy_file_server.repository.FileRepository;
 import com.example.toy_file_server.service.FileStorageService;
-
 @Component
-public class Task {
+public class ScheduledTasks {
 
-    @Value("${.file.storage.location}")
+    @Value("${file.storage.location}")
     private String storageLocation;
 
     @Autowired
-    private FileRepository fileRepository;
-
-    private static final Logger log = LoggerFactory.getLogger(Task.class);
+    private FileStorageService fileStorageService;
 
 
-    @Scheduled(fixedDelay = 10000)
+    private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+
+
+    @Scheduled(fixedRate = 10000)
     public void updateDatabaseTask() {
+        fileStorageService.removeAll();
         File folder = new File(storageLocation);
         File[] listOfFiles = folder.listFiles();
 
@@ -34,12 +34,10 @@ public class Task {
                   .forEach(file -> {
                       // Process each file as needed
                       log.info("Found File: " + file.getName());
-                      saveFileFromFS(file);
+                      fileStorageService.saveFile(FileEntity.convertToEntity(file));
                   });
         } else {
             System.out.println("The folder is empty or does not exist.");
         }
     }
-
-    
 }
